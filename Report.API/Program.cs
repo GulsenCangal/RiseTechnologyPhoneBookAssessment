@@ -5,6 +5,8 @@ using Report.API.Models.Context;
 using Report.API.Services.Interfaces;
 using Report.API.Services;
 using Contact.API.Models.Context;
+using Report.API.ServiceExtensions;
+using Report.API.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +17,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ReportDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("PostgresqlConnection")));
+builder.Services.Configure<ReportSettings>(builder.Configuration.GetSection("Options"));
 builder.Services.AddScoped<IReportService, ReportService>();
-
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 app.Services.CreateScope().ServiceProvider.GetRequiredService<ReportDbContext>().Database.Migrate();
@@ -27,6 +30,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseRabbitMq();
 
 app.UseHttpsRedirection();
 

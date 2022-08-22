@@ -4,9 +4,11 @@ namespace Report.API.Data
 {
     public class ReportContactInformationData
     {
-        public Guid UUID { get; set; }
-        public InformationType InformationType { get; set; }
-        public string InformationContent { get; set; }
-        public Guid PersonId { get; set; }
+        public Guid uuId { get; set; }
+        public int informationType { get; set; }
+        public string informationContent { get; set; }
+        public Guid personUuId { get; set; }
+
+       
     }
 }

@@ -3,7 +3,7 @@ using Report.API.Models.Entity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Report.API.Entities
+namespace Report.API.Models.Entity
 {
     [Table("Reports")]
     public class Report

@@ -1,28 +1,34 @@
-﻿using Contact.API.Data;
-using Contact.API.Models.Context;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using RabbitMQ.Client;
+using Report.API.Constants;
 using Report.API.Data;
-using Report.API.Entities;
 using Report.API.Enums;
 using Report.API.Models.Context;
 using Report.API.Models.Entity;
 using Report.API.Services.Interfaces;
-using System.Net.Http;
+using System.Text;
+using ReportRequestData = Report.API.Data.ReportRequestData;
 
 namespace Report.API.Services
 {
     public class ReportService:IReportService
     {
         ReportDbContext reportContext;
-        public ReportService(ReportDbContext context)
+        private readonly ReportSettings reportSettings;
+        private readonly IHttpClientFactory httpClientFactory;
+
+        public ReportService(ReportDbContext context, IHttpClientFactory httpClientFactory, IOptions<ReportSettings> reportSettings)
         {
             reportContext = context;
+            this.httpClientFactory = httpClientFactory;
+            this.reportSettings = reportSettings?.Value; 
         }
 
         public async Task<ReportReturnData> CreateNewReport()
         {
-            var report = new Report.API.Entities.Report()
+            var report = new Report.API.Models.Entity.Report()
             {
                 requestDate = DateTime.UtcNow,
                 reportStatus = ReportStatusType.preparing,
@@ -130,5 +136,71 @@ namespace Report.API.Services
                 };
             }
         }
+
+        public async Task<ReportReturnData> CreateReportDetail(Guid reportUuId)
+        {
+            var report = await reportContext.reportTable.Where(x => x.uuId == reportUuId).FirstOrDefaultAsync();
+
+            if (report == null)
+            {
+                return new ReportReturnData
+                {
+                    response = true,
+                    message = "Rapor kaydı bulunamadı.",
+                    data = null
+                };
+            }
+
+            var client = httpClientFactory.CreateClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{reportSettings.contactApiUrl}/Person/ContactInformations");
+            var response = await client.SendAsync(request);
+
+            var responseStream = await response.Content.ReadAsStringAsync();
+            var contactInformations = JsonConvert.DeserializeObject<IEnumerable<ReportContactInformationData>>(responseStream);
+
+            var statisticsReport = contactInformations.Where(x => x.informationType == 2).Select(x => x.informationContent).Distinct().Select(x => new ReportDetail
+            {
+                reportUuId = reportUuId,
+                location = x,
+                personCount = contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Count(),
+                phoneNumberCount = contactInformations.Where(y => y.informationType == 0 && contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Select(x => x.personUuId).Contains(y.personUuId)).Count()
+            });
+
+            report.reportStatus = ReportStatusType.completed;
+
+            await reportContext.reportDetailTable.AddRangeAsync(statisticsReport);
+            await reportContext.SaveChangesAsync();
+            return new ReportReturnData
+            {
+                response = true,
+                message = "Rapor tamamlandı.",
+                data = report
+            };
+        }
+
+        public async Task CreateRabbitMQPublisher(ReportRequestData reportRequestData,ReportSettings reportSettings)
+        {
+            var conn = reportSettings.rabbitMqConsumer;
+
+            var createDocumentQueue = "create_document_queue";
+            var documentCreateExchange = "document_create_exchange";
+
+            ConnectionFactory connectionFactory = new()
+            {
+                Uri = new Uri(conn)
+            };
+
+            var connection = connectionFactory.CreateConnection();
+
+            var channel = connection.CreateModel();
+            channel.ExchangeDeclare(documentCreateExchange, "direct");
+
+            channel.QueueDeclare(createDocumentQueue, false, false, false);
+            channel.QueueBind(createDocumentQueue, documentCreateExchange, createDocumentQueue);
+
+            channel.BasicPublish(documentCreateExchange, createDocumentQueue, null, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(reportRequestData)));
+
+        }
+
     }
 }

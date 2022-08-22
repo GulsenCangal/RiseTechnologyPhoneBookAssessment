@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ContactDbContext>(option => option.UseNpgsql(build
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IContactInformationService, ContactInformationService>();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 app.Services.CreateScope().ServiceProvider.GetRequiredService<ContactDbContext>().Database.Migrate();
