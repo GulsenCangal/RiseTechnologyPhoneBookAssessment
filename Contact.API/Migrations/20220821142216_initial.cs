@@ -25,7 +25,7 @@ namespace Contact.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "contactInformationTable",
+                name: "ContactInformations",
                 columns: table => new
                 {
                     uuId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -36,9 +36,9 @@ namespace Contact.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_contactInformationTable", x => x.uuId);
+                    table.PrimaryKey("PK_ContactInformations", x => x.uuId);
                     table.ForeignKey(
-                        name: "FK_contactInformationTable_Persons_personUuId",
+                        name: "FK_ContactInformations_Persons_personUuId",
                         column: x => x.personUuId,
                         principalTable: "Persons",
                         principalColumn: "uuId",
@@ -46,15 +46,15 @@ namespace Contact.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_contactInformationTable_personUuId",
-                table: "contactInformationTable",
+                name: "IX_ContactInformations_personUuId",
+                table: "ContactInformations",
                 column: "personUuId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "contactInformationTable");
+                name: "ContactInformations");
 
             migrationBuilder.DropTable(
                 name: "Persons");

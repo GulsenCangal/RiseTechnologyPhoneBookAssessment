@@ -45,7 +45,7 @@ namespace Contact.API.Migrations
 
                     b.HasIndex("personUuId");
 
-                    b.ToTable("contactInformationTable");
+                    b.ToTable("ContactInformations");
                 });
 
             modelBuilder.Entity("Contact.API.Models.Entity.Person", b =>

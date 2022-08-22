@@ -1,8 +1,10 @@
 ﻿using Contact.API.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Contact.API.Models.Entity
 {
+    [Table("ContactInformations")]
     public class ContactInformation
     {
         [Key]

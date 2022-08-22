@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Contact.API.Migrations
 {
     [DbContext(typeof(ContactDbContext))]
-    [Migration("20220821134026_initial")]
+    [Migration("20220821142216_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,7 +47,7 @@ namespace Contact.API.Migrations
 
                     b.HasIndex("personUuId");
 
-                    b.ToTable("contactInformationTable");
+                    b.ToTable("ContactInformations");
                 });
 
             modelBuilder.Entity("Contact.API.Models.Entity.Person", b =>
