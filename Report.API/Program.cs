@@ -7,6 +7,7 @@ using Report.API.Services;
 using Contact.API.Models.Context;
 using Report.API.ServiceExtensions;
 using Report.API.Constants;
+using Report.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,8 @@ if (app.Environment.IsDevelopment())
 app.UseRabbitMq();
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseAuthorization();
 

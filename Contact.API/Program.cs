@@ -2,6 +2,7 @@ using Contact.API.Models.Context;
 using Contact.API.Services.Interfaces;
 using Contact.API.Services;
 using Microsoft.EntityFrameworkCore;
+using Contact.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

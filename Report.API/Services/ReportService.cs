@@ -8,6 +8,7 @@ using Report.API.Enums;
 using Report.API.Models.Context;
 using Report.API.Models.Entity;
 using Report.API.Services.Interfaces;
+using System.Numerics;
 using System.Text;
 using ReportRequestData = Report.API.Data.ReportRequestData;
 
@@ -156,7 +157,7 @@ namespace Report.API.Services
             var response = await client.SendAsync(request);
 
             var responseStream = await response.Content.ReadAsStringAsync();
-            var contactInformations = JsonConvert.DeserializeObject<IEnumerable<ReportContactInformationData>>(responseStream);
+            var contactInformations = JsonConvert.DeserializeObject<IEnumerable<ReportContactInformationData>>(JsonConvert.SerializeObject((JsonConvert.DeserializeObject<ReportReturnData>(responseStream)).data));
 
             var statisticsReport = contactInformations.Where(x => x.informationType == 2).Select(x => x.informationContent).Distinct().Select(x => new ReportDetail
             {
@@ -165,6 +166,9 @@ namespace Report.API.Services
                 personCount = contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Count(),
                 phoneNumberCount = contactInformations.Where(y => y.informationType == 0 && contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Select(x => x.personUuId).Contains(y.personUuId)).Count()
             });
+
+            //
+            await GenerateExcelReport(statisticsReport);
 
             report.reportStatus = ReportStatusType.completed;
 
@@ -202,5 +206,19 @@ namespace Report.API.Services
 
         }
 
+        public async Task GenerateExcelReport(IEnumerable<ReportDetail> reportDetailList)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("ReportId;Location;PersonCount;PhoneNumberCount");
+           
+            foreach (var reportRecord in reportDetailList)
+            {
+                builder.AppendLine($"{reportRecord.reportUuId};{reportRecord.location};{reportRecord.personCount};{reportRecord.phoneNumberCount}");
+            }
+         
+            File.WriteAllText("C:\\Users\\Gulsen\\Desktop\\PHONEBOOK_REPORT_TEST\\PHONE.BOOK.REPORT." +Guid.NewGuid() + ".csv", builder.ToString());
+           
+            builder.Clear();
+        }
     }
 }
