@@ -167,7 +167,6 @@ namespace Report.API.Services
                 phoneNumberCount = contactInformations.Where(y => y.informationType == 0 && contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Select(x => x.personUuId).Contains(y.personUuId)).Count()
             });
 
-            //
             await GenerateExcelReport(statisticsReport);
 
             report.reportStatus = ReportStatusType.completed;
