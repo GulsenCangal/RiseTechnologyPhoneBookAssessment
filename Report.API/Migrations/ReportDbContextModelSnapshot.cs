@@ -22,11 +22,15 @@ namespace Report.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Report.API.Entities.Report", b =>
+            modelBuilder.Entity("Report.API.Models.Entity.Report", b =>
                 {
                     b.Property<Guid>("uuId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("reportPath")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("reportStatus")
                         .HasColumnType("integer");
@@ -67,14 +71,14 @@ namespace Report.API.Migrations
 
             modelBuilder.Entity("Report.API.Models.Entity.ReportDetail", b =>
                 {
-                    b.HasOne("Report.API.Entities.Report", null)
+                    b.HasOne("Report.API.Models.Entity.Report", null)
                         .WithMany("reportDetails")
                         .HasForeignKey("reportUuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Report.API.Entities.Report", b =>
+            modelBuilder.Entity("Report.API.Models.Entity.Report", b =>
                 {
                     b.Navigation("reportDetails");
                 });

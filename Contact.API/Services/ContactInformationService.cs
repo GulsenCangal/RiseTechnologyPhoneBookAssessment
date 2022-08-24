@@ -22,7 +22,7 @@ namespace Contact.API.Services
             {
                 return new ReturnData
                 {
-                    response = true,
+                    response = false,
                     message = "İletişim bilgisi eklenecek kişi bulunmamaktadır.",
                     data = null
                 };

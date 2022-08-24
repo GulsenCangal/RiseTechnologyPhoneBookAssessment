@@ -34,6 +34,7 @@ namespace Report.API.Services
             {
                 requestDate = DateTime.UtcNow,
                 reportStatus = ReportStatusType.preparing,
+                reportPath="",
             };
 
             await reportContext.reportTable.AddAsync(report);
@@ -61,31 +62,21 @@ namespace Report.API.Services
 
         public async Task<ReportReturnData> GetAllReports()
         {
-            int reportCount = reportContext.reportTable.Count();
-
-            if (reportCount == 0)
-            {
-                return new ReportReturnData
-                {
-                    response = false,
-                    message = "Listelenecek kayıt bulunmamaktadır.",
-                    data = null
-                };
-            }
-
+           
             var allReports = await reportContext.reportTable.Select(p => new ReportData
             {
                 uuId = p.uuId,
                 reportStatus = p.reportStatus,
                 requestDate = p.requestDate,
+                reportPath = p.reportPath,
             }).ToListAsync();
 
-            if (allReports == null)
+            if (allReports.Count == 0)
             {
                 return new ReportReturnData
                 {
                     response = false,
-                    message = "Raporlar listelenirken hata oluştu.",
+                    message = "Listelenecek rapor bulunmamaktadır.",
                     data = null
                 };
             }
@@ -109,6 +100,7 @@ namespace Report.API.Services
                     uuId = p.uuId,
                     reportStatus = p.reportStatus,
                     requestDate = p.requestDate,
+                    reportPath=p.reportPath,
                 },
                 detailData = p.reportDetails.Select(d => new DetailData
                 {
@@ -167,11 +159,11 @@ namespace Report.API.Services
                 personCount = contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Count(),
                 phoneNumberCount = contactInformations.Where(y => y.informationType == 0 && contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Select(x => x.personUuId).Contains(y.personUuId)).Count(),
         });
-
-            var reportPath=await GenerateReportDocument(statisticsReport);
+            var reportPath = Directory.GetCurrentDirectory() + "\\Reports\\PHONE.BOOK.REPORT." + Guid.NewGuid() + ".csv";
+            await GenerateReportDocument(statisticsReport, reportPath);
 
             report.reportStatus = ReportStatusType.completed;
-
+            report.reportPath = reportPath;
             await reportContext.reportDetailTable.AddRangeAsync(statisticsReport);
             await reportContext.SaveChangesAsync();
             return new ReportReturnData
@@ -206,13 +198,13 @@ namespace Report.API.Services
 
         }
 
-        public async Task<string> GenerateReportDocument(IEnumerable<ReportDetail> reportDetailList)
+        public async Task GenerateReportDocument(IEnumerable<ReportDetail> reportDetailList, string rPath)
         {
             var builder = new StringBuilder();
             builder.AppendLine("ReportId;Location;PersonCount;PhoneNumberCount");
 
             var folder = Directory.GetCurrentDirectory() + "\\Reports";
-            var reportPath = folder + "\\Reports\\PHONE.BOOK.REPORT." + Guid.NewGuid() + ".csv";
+          
             if (!Directory.Exists(folder))
                 System.IO.Directory.CreateDirectory(folder + "\\Reports");
 
@@ -222,10 +214,9 @@ namespace Report.API.Services
                 
             }
 
-            File.WriteAllText(reportPath, builder.ToString());
+            File.WriteAllText(rPath, builder.ToString());
 
             builder.Clear();
-            return reportPath;
         }
     }
 }

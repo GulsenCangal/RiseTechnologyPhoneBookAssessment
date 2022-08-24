@@ -7,5 +7,7 @@ namespace Report.API.Data
         public Guid uuId { get; set; }
         public DateTime requestDate { get; set; }
         public ReportStatusType reportStatus { get; set; }
+
+        public string reportPath { get; set; }
     }
 }

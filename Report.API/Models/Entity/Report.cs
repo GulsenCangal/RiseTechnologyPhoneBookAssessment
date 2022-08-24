@@ -13,6 +13,7 @@ namespace Report.API.Models.Entity
         public Guid uuId { get; set; }
         public DateTime requestDate { get; set; }
         public ReportStatusType reportStatus { get; set; }
+        public string reportPath { get; set; }
         public virtual List<ReportDetail> reportDetails { get; set; }
     }
 }

@@ -61,8 +61,8 @@ namespace Report.API.Controllers
             if (allReports.response == false)
             {
                 return NotFound(allReports.message);
-            }
-            else
+            }           
+                else
             {
                 return Ok(allReports);
             }
