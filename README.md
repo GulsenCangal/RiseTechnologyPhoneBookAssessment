@@ -12,4 +12,24 @@ Kişiler ile ilgili crud işlemlerin yapılıp kişilerin lokasyon verilerine g�
     <li>Moq</li>
     <li>Coverlet</li>
 </ul>  
-<h2>Phone Book Gerk</h2>
+<h2>Phone Book Gereklilikler</h2>
+Docker'ın bilgisayarınızda yüklü olduğundan emin olunuz. Ardından aşağıdaki komut ile RabbitMq'u Docker üzerinden çalıştırınız.
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
+PostgreSQL'nin bilgisayarınızda yüklü olduğundan emin olunuz. Ardından aşağıdaki adımları uygulayınız.
+
+PhoneBook.API içerisinde bulunan appsettings.json dosyasındaki "ConnectionStrings" içerisinde bulunan User ID, Password ve Host bilgilerini kendinize uygun şekilde düzenleyeniz.
+Report.API içerisinde bulunan appsettings.json dosyasındaki "ConnectionStrings" içerisinde bulunan User ID, Password ve Host bilgilerini kendinize uygun şekilde düzenleyeniz.
+RabbitMQ bağlantı bilgisini kendinize göre düzenlemek isterseniz eğer aşağıdaki adımları uygulayınız.
+
+PhoneBook.API içerisinde bulunan appsettings.json dosyasındaki "Options" içerisinde bulunan RabbitMqCon bilgisini kendinize uygun şekilde düzenleyeniz.
+
+Report.API içerisinde bulunan appsettings.json dosyasındaki "Options" içerisinde bulunan RabbitMqCon bilgisini kendinize uygun şekilde düzenleyeniz.
+
+PhoneBook.API için Report.API içerisinde bulunan appsettings.json dosyasındaki PhoneBookApiUrl bilgisini kendinize uygun şekilde düzenleyiniz.
+
+Report.API için PhoneBook.API içerisinde bulunan appsettings.json dosyasındaki ReportApiUrl bilgisini kendinize uygun şekilde düzenleyiniz.
+
+Projeler varsayılan ayarlar ile derlenip, çalıştırıldığında aşağıdaki url'ler üzerinden swagger arayüzüne ulaşabilirsiniz.
+
+PhoneBook.API Url: https://localhost:7271/swagger/index.html
+Report.API Url   : https://localhost:7055/swagger/index.html
