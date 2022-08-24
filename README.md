@@ -41,4 +41,5 @@ PhoneBook.API Url: https://localhost:7271/swagger/index.html
 Report.API Url   : https://localhost:7055/swagger/index.html
 
 <h2>Unit Test Code Coverage Sonuçları</h2>
-<img src="C:\Users\Gulsen\Desktop\unitTtestCoverage.PNG" alt="Alt text" title="Optional title">
+
+![unitTtestCoverage](https://user-images.githubusercontent.com/111676187/186534641-1b4538cc-8cb5-4fc7-bdb4-81ac406b07bd.PNG)
