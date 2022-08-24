@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Report.API", "Report.API\Re
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{59A85F51-DB31-4E4A-8254-69B98932DB49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneBook.Tests", "..\PhoneBook.Tests\PhoneBook.Tests.csproj", "{3540DA13-8D2A-4948-A4DB-2CB24DB94839}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{59A85F51-DB31-4E4A-8254-69B98932DB49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59A85F51-DB31-4E4A-8254-69B98932DB49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59A85F51-DB31-4E4A-8254-69B98932DB49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3540DA13-8D2A-4948-A4DB-2CB24DB94839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3540DA13-8D2A-4948-A4DB-2CB24DB94839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3540DA13-8D2A-4948-A4DB-2CB24DB94839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3540DA13-8D2A-4948-A4DB-2CB24DB94839}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

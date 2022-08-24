@@ -10,6 +10,7 @@ using Report.API.Models.Entity;
 using Report.API.Services.Interfaces;
 using System.Numerics;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 using ReportRequestData = Report.API.Data.ReportRequestData;
 
 namespace Report.API.Services
@@ -164,10 +165,10 @@ namespace Report.API.Services
                 reportUuId = reportUuId,
                 location = x,
                 personCount = contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Count(),
-                phoneNumberCount = contactInformations.Where(y => y.informationType == 0 && contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Select(x => x.personUuId).Contains(y.personUuId)).Count()
-            });
+                phoneNumberCount = contactInformations.Where(y => y.informationType == 0 && contactInformations.Where(y => y.informationType == 2 && y.informationContent == x).Select(x => x.personUuId).Contains(y.personUuId)).Count(),
+        });
 
-            await GenerateExcelReport(statisticsReport);
+            var reportPath=await GenerateReportDocument(statisticsReport);
 
             report.reportStatus = ReportStatusType.completed;
 
@@ -176,7 +177,7 @@ namespace Report.API.Services
             return new ReportReturnData
             {
                 response = true,
-                message = "Rapor tamamlandı.",
+                message = "Rapor tamamlandı. Oluşturulan rapor dokümanı: "+reportPath,
                 data = report
             };
         }
@@ -205,19 +206,26 @@ namespace Report.API.Services
 
         }
 
-        public async Task GenerateExcelReport(IEnumerable<ReportDetail> reportDetailList)
+        public async Task<string> GenerateReportDocument(IEnumerable<ReportDetail> reportDetailList)
         {
             var builder = new StringBuilder();
             builder.AppendLine("ReportId;Location;PersonCount;PhoneNumberCount");
-           
+
+            var folder = Directory.GetCurrentDirectory() + "\\Reports";
+            var reportPath = folder + "\\Reports\\PHONE.BOOK.REPORT." + Guid.NewGuid() + ".csv";
+            if (!Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder + "\\Reports");
+
             foreach (var reportRecord in reportDetailList)
             {
                 builder.AppendLine($"{reportRecord.reportUuId};{reportRecord.location};{reportRecord.personCount};{reportRecord.phoneNumberCount}");
+                
             }
-         
-            File.WriteAllText("C:\\Users\\Gulsen\\Desktop\\PHONEBOOK_REPORT_TEST\\PHONE.BOOK.REPORT." +Guid.NewGuid() + ".csv", builder.ToString());
-           
+
+            File.WriteAllText(reportPath, builder.ToString());
+
             builder.Clear();
+            return reportPath;
         }
     }
 }
