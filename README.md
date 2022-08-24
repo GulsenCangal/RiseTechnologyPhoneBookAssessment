@@ -17,6 +17,12 @@ Docker'ın bilgisayarınızda yüklü olduğundan emin olunuz. Ardından aşağ�
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
 PostgreSQL'nin bilgisayarınızda yüklü olduğundan emin olunuz. Ardından aşağıdaki adımları uygulayınız.
 
+Coverlot için öncelikli olarak Nuget console'dan:
+*cd test klasör yolu
+*dotnet add package coverlet.msbuild
+*dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+adımlarını izleyiniz.
+
 PhoneBook.API içerisinde bulunan appsettings.json dosyasındaki "ConnectionStrings" içerisinde bulunan User ID, Password ve Host bilgilerini kendinize uygun şekilde düzenleyeniz.
 Report.API içerisinde bulunan appsettings.json dosyasındaki "ConnectionStrings" içerisinde bulunan User ID, Password ve Host bilgilerini kendinize uygun şekilde düzenleyeniz.
 RabbitMQ bağlantı bilgisini kendinize göre düzenlemek isterseniz eğer aşağıdaki adımları uygulayınız.
