@@ -42,7 +42,7 @@ Projeler varsayılan ayarlar ile derlenip, çalıştırıldığında aşağıdak
 PhoneBook.API Url: https://localhost:7271/swagger/index.html
 Report.API Url   : https://localhost:7055/swagger/index.html
 
-<b>Unit Test Code Coverage Sonuçları</b>
+<h2>Unit Test Code Coverage Sonuçları</h2>
 
 ![unitTtestCoverage](https://user-images.githubusercontent.com/111676187/186943733-f6d36eee-9445-4058-9fb3-b6e3eb810935.PNG)
 
