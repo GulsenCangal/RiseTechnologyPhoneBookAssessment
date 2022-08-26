@@ -198,7 +198,7 @@ namespace Report.API.Services
 
         }
 
-        public async Task GenerateReportDocument(IEnumerable<ReportDetail> reportDetailList, string rPath)
+        public async Task<ReportReturnData> GenerateReportDocument(IEnumerable<ReportDetail> reportDetailList, string rPath)
         {
             var builder = new StringBuilder();
             builder.AppendLine("ReportId;Location;PersonCount;PhoneNumberCount");
@@ -217,6 +217,12 @@ namespace Report.API.Services
             File.WriteAllText(rPath, builder.ToString());
 
             builder.Clear();
+            return new ReportReturnData
+            {
+                response = true,
+                message = "Rapor tamamlandı. Oluşturulan rapor dokümanı: " + rPath,
+                data = rPath
+            };
         }
     }
 }
